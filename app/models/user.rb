@@ -16,4 +16,6 @@ class User < ApplicationRecord
   validates :birth_date, presence: true
   validates :password, format: { with: /\A(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+\z/, message: 'is not a mix of alphanumeric characters' }, if: -> { password.present? }
   
+  has_many :items
+
 end
