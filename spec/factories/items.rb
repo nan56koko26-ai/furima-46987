@@ -9,5 +9,6 @@ FactoryBot.define do
     prefecture_id {2}
     delivery_time_id {2}
     association :user
+    after(:build) { |item| item.image.attach(io: File.open(Rails.root.join('spec','fixtures','files','sample.png')), filename: 'sample.png', content_type: 'image/png') }
   end
 end
