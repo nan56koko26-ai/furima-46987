@@ -1,7 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :user
   has_one_attached :image
-  has_many :purchases
+  
 
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to_active_hash :category
@@ -26,7 +26,7 @@ class Item < ApplicationRecord
   validates :delivery_time_id, numericality: { other_than: 1 , message: "must be other than 「---」"}
   validates :price, presence: true
   validates :price, numericality: { only_integer: true, greater_than_or_equal_to: 300, less_than_or_equal_to: 9_999_999, message: "must be between 300 and 9,999,999" }
-  validates :user, presence: true 
+  
   validates :image, presence: true
 
 
