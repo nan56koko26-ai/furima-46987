@@ -2,9 +2,7 @@ class Item < ApplicationRecord
   belongs_to :user
   has_one_attached :image
   has_one :purchase
-  def sold?
-    purchase.present?
-  end
+  
 
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to_active_hash :category
