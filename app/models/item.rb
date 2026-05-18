@@ -2,6 +2,10 @@ class Item < ApplicationRecord
   belongs_to :user
   has_one_attached :image
   has_one :purchase
+
+  def sold?
+    purchase.present?
+  end
   
 
   extend ActiveHash::Associations::ActiveRecordExtensions
@@ -28,7 +32,11 @@ class Item < ApplicationRecord
   validates :price, presence: true
   validates :price, numericality: { only_integer: true, greater_than_or_equal_to: 300, less_than_or_equal_to: 9_999_999, message: "must be between 300 and 9,999,999" }
   
-  validates :image, presence: true
+  validates :image, presence: true, unless: :was_attached?
+
+  def was_attached?
+    self.image.was_attached?
+  end
 
 
 end
