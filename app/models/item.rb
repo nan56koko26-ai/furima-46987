@@ -32,10 +32,10 @@ class Item < ApplicationRecord
   validates :price, presence: true
   validates :price, numericality: { only_integer: true, greater_than_or_equal_to: 300, less_than_or_equal_to: 9_999_999, message: "must be between 300 and 9,999,999" }
   
-  validates :image, presence: true, unless: :was_attached?
+  validates :image, presence: true, on: :create, unless: :was_attached?
 
   def was_attached?
-    self.image.was_attached?
+    self.image.attached?
   end
 
 
