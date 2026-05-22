@@ -1,5 +1,7 @@
 class PurchasesController < ApplicationController
+  before_action :authenticate_user!, only: [:index, :create]
   before_action :set_item, only: [:index, :create]
+  before_action :move_to_root_if_seller, only: [:index, :create]
 
   def index
     gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
@@ -19,11 +21,7 @@ class PurchasesController < ApplicationController
       end
     else
       gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
-      render 'index', status: :unprocessable_entity
-    end
-    ActiveRecord::Base.transaction do
-      @purchase.save!
-      @shipping_address.save!
+      render :index, status: :unprocessable_entity
     end
   end
 
@@ -35,6 +33,12 @@ class PurchasesController < ApplicationController
 
   def set_item
     @item = Item.find(params[:item_id])
+  end
+
+  def move_to_root_if_seller
+    if current_user && @item.user_id == current_user.id
+      redirect_to root_path
+    end
   end
 
   def pay_item
