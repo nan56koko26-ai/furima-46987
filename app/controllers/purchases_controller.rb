@@ -5,20 +5,17 @@ class PurchasesController < ApplicationController
 
   def index
     gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
-    @purchase = Purchase.new
+    @purchase_shipping = PurchaseShipping.new
     
   end
 
   def create
-    @purchase = Purchase.new(user: current_user, item: @item, token: params[:token])
-    @shipping_address = @purchase.build_shipping_address(shipping_address_params)
-    if @purchase.valid? && @shipping_address.valid?
-      ActiveRecord::Base.transaction do
+    @purchase_shipping = PurchaseShipping.new(shipping_address_params)
+    if @purchase_shipping.valid?
+      @purchase_shipping.token = params[:token]
         pay_item
-        @purchase.save
-        @shipping_address.save
+        @purchase_shipping.save
         return redirect_to root_path
-      end
     else
       gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
       render :index, status: :unprocessable_entity
@@ -28,7 +25,7 @@ class PurchasesController < ApplicationController
   private
 
   def shipping_address_params
-    params.require(:purchase).permit(:postal_code, :prefecture_id, :city, :address, :building_name, :phone_number)
+    params.require(:purchase_shipping).permit(:token, :postal_code, :prefecture_id, :city, :address, :building_name, :phone_number).merge(user: current_user,  item: @item)
   end
 
   def set_item
@@ -49,5 +46,4 @@ class PurchasesController < ApplicationController
       currency: 'jpy'                 # 通貨の種類（日本円）
     )
   end
-
 end
