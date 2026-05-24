@@ -13,13 +13,13 @@ class PurchaseShipping
     validates :token
   end
 
-  validates :user_id, presence: { message: "must exist" }
-  validates :item_id, presence: { message: "must exist" }
+  validates :user, presence: { message: "must exist" }
+  validates :item, presence: { message: "must exist" }
   
 
 
   def save
-    purchase = Purchase.create(user_id: user_id, item_id: item_id)
+    purchase = Purchase.create(user_id: user.id, item_id: item.id)
     Address.create(purchase_id: purchase_id, postal_code: postal_code, prefecture: prefecture, city: city, address: address, phone_number: phone_number)
   end
 end
