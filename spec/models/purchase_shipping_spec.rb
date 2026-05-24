@@ -11,6 +11,9 @@ RSpec.describe PurchaseShipping, type: :model do
       it "入力情報に不備がなければ購入できる" do
         expect(@purchase_shipping).to be_valid
       end
+      it "建物名が空でも購入できる" do
+        expect(@purchase_shipping).to be_valid
+      end
     end
 
     context '購入できない場合' do
@@ -61,12 +64,17 @@ RSpec.describe PurchaseShipping, type: :model do
         @purchase_shipping.valid?
         expect(@purchase_shipping.errors.full_messages).to include("Phone number must be 10–11 digits long and contain no hyphens")
       end
+      it "addressが空では購入できない" do
+        @purchase_shipping.address = ''
+        @purchase_shipping.valid?
+        expect(@purchase_shipping.errors.full_messages).to include("Address can't be blank")
+      end
       it "phone_numberが9桁以下だと購入できない" do
         @purchase_shipping.phone_number = '088535159'
         @purchase_shipping.valid?
         expect(@purchase_shipping.errors.full_messages).to include("Phone number must be 10–11 digits long and contain no hyphens")
       end
-      it "phone_numberが11桁以上だと購入できない" do
+      it "phone_numberが12桁以上だと購入できない" do
         @purchase_shipping.phone_number = '080111111111'
         @purchase_shipping.valid?
         expect(@purchase_shipping.errors.full_messages).to include("Phone number must be 10–11 digits long and contain no hyphens")
