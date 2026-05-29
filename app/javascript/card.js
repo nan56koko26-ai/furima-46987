@@ -29,7 +29,6 @@ const pay = () => {
         form.dataset.sending = 'true'
       }
     });
-    
   });
 };
 
