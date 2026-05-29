@@ -12,10 +12,9 @@ class PurchasesController < ApplicationController
   def create
     @purchase_shipping = PurchaseShipping.new(shipping_address_params)
     if @purchase_shipping.valid?
-      @purchase_shipping.token = params[:token]
-        pay_item
-        @purchase_shipping.save
-        return redirect_to root_path
+      pay_item
+      @purchase_shipping.save
+      return redirect_to root_path
     else
       gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
       render :index, status: :unprocessable_entity
@@ -42,7 +41,7 @@ class PurchasesController < ApplicationController
     Payjp.api_key = ENV["PAYJP_SECRET_KEY"]  # 自身のPAY.JPテスト秘密鍵を記述しましょう
     Payjp::Charge.create(
       amount: @item.price,  # 商品の値段
-      card: params[:token] ,    # カードトークン
+      card: params[:purchase_shipping][:token],    # カードトークン
       currency: 'jpy'                 # 通貨の種類（日本円）
     )
   end
